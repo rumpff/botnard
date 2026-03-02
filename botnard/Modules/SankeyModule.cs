@@ -13,7 +13,8 @@ namespace botnard.Modules
     public enum GraphDetail
     {
         [ChoiceDisplay("Normal")] Normal,
-        [ChoiceDisplay("Show Accounts")] ShowAccounts
+        [ChoiceDisplay("Detailed")] ShowAccounts,
+        [ChoiceDisplay("Minimal")] NoBudgets
     }
     public enum RelativePeriods
     {
@@ -130,7 +131,7 @@ namespace botnard.Modules
             try
             {
                 // 2. Run the process and capture output
-                var (output, success) = await _os.RunInDirectoryAsync("npx", $"firefly-iii-sankey -t {token} -u {url} {commandArgs} --no-budgets -f sankeymatic", folderPath);
+                var (output, success) = await _os.RunInDirectoryAsync("npx", $"firefly-iii-sankey -t {token} -u {url} {commandArgs} -f sankeymatic", folderPath);
 
                 Bot.LogLine($"[Sankey] Execution {(success ? "Succeeded" : "Failed")}");
 
@@ -164,6 +165,7 @@ namespace botnard.Modules
         private string GetDetailFlags(GraphDetail detail) => detail switch
         {
             GraphDetail.ShowAccounts => " --with-accounts",
+            GraphDetail.NoBudgets => "--no-budgets",
             _ => "" // Normal/Default
         };
     }
